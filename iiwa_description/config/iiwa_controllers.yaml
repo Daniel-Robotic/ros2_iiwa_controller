@@ -1,0 +1,32 @@
+controller_manager:
+  ros__parameters:
+    update_rate: 100 
+
+    iiwa_arm_controller:
+      type: "joint_trajectory_controller/JointTrajectoryController"
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+joint_state_broadcaster:
+  ros__parameters: {}
+
+iiwa_arm_controller:
+  ros__parameters:
+    joints:
+      - lbr_iiwa7_A1
+      - lbr_iiwa7_A2
+      - lbr_iiwa7_A3
+      - lbr_iiwa7_A4
+      - lbr_iiwa7_A5
+      - lbr_iiwa7_A6
+      - lbr_iiwa7_A7
+
+    command_interfaces:
+      - position
+
+    state_interfaces:
+      - position
+      - velocity
+      
+    stop_trajectory_duration: 0.1

@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <xacro:macro name="add_link"
+               params="idx parent_link
+                       inertial_rpy inertial_xyz
+                       inertial_mass ixx ixy ixz iyy iyz izz
+                       mesh_xyz mesh_rpy mesh_scale
+                       joint_type joint_xyz joint_rpy 
+                       joint_axis_xyz">
+
+    <!-- ========== LINK ========== -->
+    <link name="${robot_name}_link_${idx}">
+      <inertial>
+        <origin xyz="${inertial_xyz}" rpy="${inertial_rpy}"/>
+        <mass value="${inertial_mass}"/>
+        <inertia ixx="${ixx}" ixy="${ixy}" ixz="${ixz}"
+                 iyy="${iyy}" iyz="${iyz}" izz="${izz}"/>
+      </inertial>
+
+      <visual>
+        <origin xyz="${mesh_xyz}" rpy="${mesh_rpy}"/>
+        <geometry>
+          <mesh filename="package://iiwa_description/meshes/visual/link_${idx}.dae"
+                scale="${mesh_scale}"/>
+        </geometry>
+      </visual>
+
+      <collision>
+        <origin xyz="${mesh_xyz}" rpy="${mesh_rpy}"/>
+        <geometry>
+          <mesh filename="package://iiwa_description/meshes/collision/link_${idx}.stl"
+                scale="${mesh_scale}"/>
+        </geometry>
+      </collision>
+    </link>
+
+    <!-- ========== JOINT ========== -->
+    <joint name="${robot_name}_A${idx}" type="${joint_type}">
+      <origin xyz="${joint_xyz}" rpy="${joint_rpy}"/>
+      <parent link="${parent_link}"/>
+      <child  link="${robot_name}_link_${idx}"/>
+
+      <xacro:if value="${joint_type == 'revolute'}">
+        <axis xyz="${joint_axis_xyz}"/>
+        <limit
+            effort="${joint_limits['A' + str(idx)]['effort']}"
+            lower="${joint_limits['A' + str(idx)]['lower'] * PI / 180}"
+            upper="${joint_limits['A' + str(idx)]['upper'] * PI / 180}"
+            velocity="${joint_limits['A' + str(idx)]['velocity'] * PI / 180}"/>
+        <dynamics damping="${joint_damping}" friction="${joint_friction}"/>
+    </xacro:if>
+      
+    </joint>
+
+  </xacro:macro>
+
+
+</robot>

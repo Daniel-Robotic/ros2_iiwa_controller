@@ -1,0 +1,84 @@
+A1:
+  alpha: -1.57
+  d: 0.34
+  a: 0
+  mass: 3.4525
+  inertia: [0.02183, 0, 0, 0.007703, -0.003887, 0.02083]
+  lower: -170
+  upper: 170
+  velocity: 98
+  effort: 700
+  initial_positions: 0.0
+  working_positions: 0.0
+A2:
+  alpha: 1.57
+  d: 0
+  a: 0
+  mass: 3.4821
+  inertia: [0.02076, 0, -0.003626, 0.02179, 0, 0.00779]
+  lower: -120
+  upper: 120
+  velocity: 98
+  effort: 700
+  initial_positions: 0.0
+  working_positions: 0.0
+A3:
+  alpha: 1.57
+  d: 0.4
+  a: 0
+  mass: 4.05623
+  inertia: [0.03204, 0, 0, 0.00972, 0.006227, 0.03042]
+  lower: -170
+  upper: 170
+  velocity: 100
+  effort: 700
+  initial_positions: 0.0
+  working_positions: 0.0
+A4:
+  alpha: -1.57
+  d: 0
+  a: 0
+  mass: 3.4822
+  inertia: [0.02178, 0, 0, 0.02075, -0.003625, 0.007785]
+  lower: -120
+  upper: 120
+  velocity: 130
+  effort: 700
+  initial_positions: 0.0
+  working_positions: -1.57
+A5:
+  alpha: -1.57
+  d: 0.4
+  a: 0
+  mass: 2.1633
+  inertia: [0.01287, 0, 0, 0.005708, -0.003946, 0.01112]
+  lower: -170
+  upper: 170
+  velocity: 140
+  effort: 700
+  initial_positions: 0.0
+  working_positions: 0.0
+A6:
+  alpha: 1.57
+  d: 0
+  a: 0
+  mass: 2.3466
+  inertia: [0.006509, 0, 0, 0.006259, 0.00031891, 0.004527]
+  lower: -120
+  upper: 120
+  velocity: 180
+  effort: 700
+  initial_positions: 0.0
+  working_positions: 1.5
+A7:
+  alpha: 0
+  d: 0.126
+  a: 0
+  mass: 3.129
+  inertia: [0.01464, 0.0005912, 0, 0.01465, 0, 0.002872]
+  lower: -175
+  upper: 175
+  velocity: 180
+  effort: 700
+  initial_positions: 0.0
+  working_positions: 0.0
