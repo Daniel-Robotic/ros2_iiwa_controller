@@ -36,5 +36,5 @@ jobs:
         file: ./Dockerfile
         push: true
         tags: |
-          evilfisru/ros2_iiwa_fri_controller:latest
-          ghcr.io/daniel-robotics/ros2_iiwa_fri_controller:latest
+          ${{ secrets.DOCKERHUB_USERNAME }}/ros2_iiwa_fri_controller:latest
+          ghcr.io/${{ secrets.DOCKERHUB_USERNAME }}/ros2_iiwa_fri_controller:latest
