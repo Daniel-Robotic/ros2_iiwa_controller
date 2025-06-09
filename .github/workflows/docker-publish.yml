@@ -19,7 +19,7 @@ jobs:
     - name: Login to DockerHub
       uses: docker/login-action@v3
       with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        username: evilfisru
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
     - name: Login to GHCR
@@ -36,5 +36,5 @@ jobs:
         file: ./Dockerfile
         push: true
         tags: |
-          ${{ secrets.DOCKERHUB_USERNAME }}/ros2_iiwa_fri_controller:latest
-          ghcr.io/${{ secrets.DOCKERHUB_USERNAME }}/ros2_iiwa_fri_controller:latest
+          evilfisru/ros2_iiwa_fri_controller:latest
+          ghcr.io/${{ github.actor }}/ros2_iiwa_fri_controller:latest
