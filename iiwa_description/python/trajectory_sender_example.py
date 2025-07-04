@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 import os, yaml, rclpy, numpy as np
 import tf2_ros, tf_transformations
 from rclpy.node         import Node
@@ -28,7 +27,7 @@ class JointTrajectoryServer(Node):
             'lbr_iiwa7_A1','lbr_iiwa7_A2','lbr_iiwa7_A3',
             'lbr_iiwa7_A4','lbr_iiwa7_A5','lbr_iiwa7_A6','lbr_iiwa7_A7'
         ]
-        self.planner = IiwaMotionPlanner(KukaIiwaRobot(),
+        self.planner = IiwaMotionPlanner(KukaIiwaRobot(), # type: ignore
                                          dt=self.DT)
 
         # ——— action-клиент к контроллеру
@@ -38,11 +37,11 @@ class JointTrajectoryServer(Node):
                                    callback_group=self.group)
         self.client.wait_for_server()
 
-        try: self.client._client._cancel_all_goals()
+        try: self.client._client._cancel_all_goals() # type: ignore
         except Exception: pass
 
         # ——— внутренние переменные
-        self.q_actual = self.planner.robot.qz
+        self.q_actual = self.planner.robot.qz # type: ignore
         self.goal_handle = None
         self.q_goal_sent = None
 
@@ -84,7 +83,7 @@ class JointTrajectoryServer(Node):
         pt0 = JointTrajectoryPoint()
         pt0.positions = self.q_actual.tolist()
         pt0.time_from_start = Duration()
-        goal.trajectory.points.append(pt0)
+        goal.trajectory.points.append(pt0) # type: ignore
 
         # ❷ траектория
         for k, q in enumerate(q_matrix, start=1):
@@ -93,7 +92,7 @@ class JointTrajectoryServer(Node):
             t = k * self.DT
             pt.time_from_start = Duration(sec=int(t),
                                           nanosec=int((t % 1) * 1e9))
-            goal.trajectory.points.append(pt)
+            goal.trajectory.points.append(pt) # type: ignore
 
         # сохранить старт и цель
         self._q_start = self.q_actual.copy()
@@ -110,14 +109,14 @@ class JointTrajectoryServer(Node):
         mp = dict(zip(msg.name, msg.position))
         try:
             self.q_actual = np.array([mp[n] for n in self.joint_names])
-            self.planner.updateCurrentPos(self.q_actual)
+            self.planner.updateCurrentPos(self.q_actual) # type: ignore
 
-            T = self.planner.robot.fkine(self.q_actual)
+            T = self.planner.robot.fkine(self.q_actual) # type: ignore
             xyz = T.t
             rpy = T.rpy(order='zyx', unit='rad')
             
-            msg = Float64MultiArray()
-            msg.data = [*xyz.tolist(), *rpy.tolist()]
+            msg = Float64MultiArray() # type: ignore
+            msg.data = [*xyz.tolist(), *rpy.tolist()] # type: ignore
             self.ee_state_pub.publish(msg)
         except KeyError:
             pass
@@ -129,7 +128,7 @@ class JointTrajectoryServer(Node):
             res.success=False; res.message='Need 7 angles, 0<speed≤1'; return res
         try:
             q_path = self.planner.move('joints',
-                                       req.goal_positions,
+                                       req.goal_positions, # type: ignore
                                        velocity=req.speed_factor)
             ok = self._send_to_controller(q_path)
             res.success = ok
@@ -147,7 +146,7 @@ class JointTrajectoryServer(Node):
             res.success=False; res.message='Bad request'; return res
         try:
             q_path = self.planner.move(req.mode,
-                                       req.target_pose,
+                                       req.target_pose, # type: ignore
                                        velocity=req.speed_factor)
             ok = self._send_to_controller(q_path)
             res.success = ok
@@ -179,7 +178,7 @@ class JointTrajectoryServer(Node):
             return
         traveled = np.linalg.norm(q_act - self._q_start)
         total = np.linalg.norm(self._q_goal - self._q_start)
-        prog = traveled / max(total, 1e-6)
+        prog = traveled / max(total, 1e-6) # type: ignore
         self.get_logger().info(f'Progress {prog*100:.1f}%')
 
     def _srv_cancel(self, _req, res):
@@ -219,7 +218,7 @@ class JointTrajectoryServer(Node):
     
     def _srv_home(self, _req, res):
         try:
-            q_home = self.planner.robot.qz
+            q_home = self.planner.robot.qz # type: ignore
             q_path = self.planner.move('joints', q_home.tolist(), velocity=0.15)
             ok = self._send_to_controller(q_path)
             res.success = ok
@@ -231,7 +230,7 @@ class JointTrajectoryServer(Node):
 
     def _srv_work(self, _req, res):
         try:
-            q_work = self.planner.robot.qr
+            q_work = self.planner.robot.qr # type: ignore
             q_path = self.planner.move('joints', q_work.tolist(), velocity=0.15)
             ok = self._send_to_controller(q_path)
             res.success = ok

@@ -10,6 +10,7 @@ from ament_index_python.packages import get_package_share_directory
 from typing import Literal
 from collections import OrderedDict
 
+
 @dataclass
 class RevoluteDHParamets:
     alpha: float
@@ -71,10 +72,12 @@ class IiwaMotionPlanner:
         
         self.dt = dt
         self.robot = robot
-        self.q_current = self.robot.qz
+        self.q_current = self.robot.qz # type: ignore
         
-    def euler_to_se3(self, x, y, z, a, b, c) -> SE3:
-        return SE3(x, y, z) * SE3.RPY([a, b, c], order='zyx')
+    def euler_to_se3(self, x: float, y: float, z: float, 
+                     a: float, b: float, c: float) -> SE3:
+        rpy: list[float] = [a, b, c]
+        return SE3(x, y, z) * SE3.RPY(rpy, order='zyx', unit='rad') # type: ignore
     
     def updateCurrentPos(self, current_pos: list[float]):
         self.q_current = current_pos
@@ -98,7 +101,7 @@ class IiwaMotionPlanner:
         q_target = []
         if mode in ["ptp", "lin"]:
             T_goal = self.euler_to_se3(*target)
-            sol = self.robot.ikine_LM(T_goal, q0=self.q_current, joint_limits=True)
+            sol = self.robot.ikine_LM(T_goal, q0=self.q_current, joint_limits=True) # type: ignore
             if not sol.success:
                 raise ValueError("IK failed for PTP mode.")
             q_target = sol.q
@@ -110,7 +113,7 @@ class IiwaMotionPlanner:
         if self.q_current is None:
             raise RuntimeError("Current joint position is None. Make sure updateCurrentPos() was called.")
         
-        delta = np.abs(q_target - self.q_current)
+        delta = np.abs(q_target - self.q_current) # type: ignore
         move_t = np.max(delta / (self.robot.qd * velocity))
         steps = max(int(move_t / self.dt), 2)
         
@@ -118,7 +121,7 @@ class IiwaMotionPlanner:
             traj = jtraj(self.q_current, q_target, steps)
             return traj.q
         
-        T_start = self.robot.fkine(self.q_current)
+        T_start = self.robot.fkine(self.q_current) # type: ignore
         T_target = self.euler_to_se3(*target)
         s_vals = trapezoidal(0, 1, steps).s
         
@@ -131,7 +134,7 @@ class IiwaMotionPlanner:
             if not isinstance(T_i, SE3):
                 raise TypeError(f"Expected SE3, got {type(T_i)}")
         
-            sol = self.robot.ikine_LM(T_i, q0=q_prev, joint_limits=True)
+            sol = self.robot.ikine_LM(T_i, q0=q_prev, joint_limits=True) # type: ignore
             if not sol.success:
                 raise ValueError("IK failed during LIN trajectory.")
                 
